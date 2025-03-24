@@ -37,12 +37,15 @@ router = APIRouter(tags=['Subscription'], prefix=f'/{XRAY_SUBSCRIPTION_PATH}')
 
 def get_subscription_user_info(user: UserResponse) -> dict:
     """Retrieve user subscription information including upload, download, total data, and expiry."""
-    return {
+    result_dict = {
         "upload": 0,
-        "download": user.used_traffic,
-        "total": user.data_limit if user.data_limit is not None else 0,
-        "expire": user.expire if user.expire is not None else 0,
+        "download": user.used_traffic
     }
+    if user.data_limit is not None:
+        result_dict["total"] = user.data_limit
+    if user.expire is not None:
+        result_dict["expire"] = user.expire
+    return result_dict
 
 
 @router.get("/{token}/")
